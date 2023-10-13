@@ -1,6 +1,6 @@
 {
   "name": "slider-controller",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "CSS scroll-snap slider with control options",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,9 @@
     "scroll-snap",
     "css",
     "javascript",
-    "typescript"
+    "typescript",
+    "lit",
+    "web-components"
   ],
   "author": "Torben Larsen",
   "license": "ISC",
