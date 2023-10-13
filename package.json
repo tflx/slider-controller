@@ -1,0 +1,33 @@
+{
+  "name": "slider-controller",
+  "version": "1.0.0",
+  "description": "CSS scroll-snap slider with control options",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tflx/slider-controller.git"
+  },
+  "keywords": [
+    "slider",
+    "carousel",
+    "scroll-snap",
+    "css",
+    "javascript",
+    "typescript"
+  ],
+  "author": "Torben Larsen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tflx/slider-controller/issues"
+  },
+  "homepage": "https://github.com/tflx/slider-controller#readme",
+  "dependencies": {
+    "classnames": "^2.3.2",
+    "gsap": "npm:@gsap/business",
+    "lit": "^2.2.7",
+    "lodash": "4.17.21"
+  }
+}
