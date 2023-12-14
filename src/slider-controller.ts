@@ -1,25 +1,24 @@
-/* eslint-disable import/no-duplicates */
-import { gsap } from 'gsap'
-import { Power3 } from 'gsap/gsap-core'
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { html, LitElement } from 'lit'
-import { customElement, property, queryAssignedElements } from 'lit/decorators.js'
-import { createRef, ref } from 'lit/directives/ref.js'
-import debounce from 'lodash/debounce'
-import findLast from 'lodash/findLast'
-import CSS from './slider-controller.css'
+import { html, LitElement } from "lit"
+import {
+  customElement,
+  property,
+  queryAssignedElements,
+} from "lit/decorators.js"
+import { createRef, ref } from "lit/directives/ref.js"
+import debounce from "lodash/debounce"
+import findLast from "lodash/findLast"
+import CSS from "./slider-controller.css"
+import "./slide-item"
 
-export const SLIDER_SCROLL = 'SLIDER_SCROLL'
+export const SLIDER_SCROLL = "SLIDER_SCROLL"
 
-@customElement('slider-controller')
+@customElement("slider-controller")
 export class SliderController extends LitElement {
   static get styles() {
     return [CSS]
   }
 
-  // Declare reactive properties
-  @property({ type: String }) imageWidth:string|undefined
+  @property({ type: String }) imageWidth: string | undefined
   slide!: HTMLElement
   currentElement: HTMLElement | undefined
   debounceScroll: any
@@ -28,28 +27,27 @@ export class SliderController extends LitElement {
   arrowRight = createRef<HTMLElement>()
   container = createRef<HTMLElement>()
 
-  @queryAssignedElements({selector: 'slide-item'})
-  slideItems!: Array<HTMLElement>;
+  @queryAssignedElements({ selector: "slide-item" })
+  slideItems!: Array<HTMLElement>
 
   connectedCallback(): void {
     super.connectedCallback()
-    gsap.registerPlugin(ScrollToPlugin, ScrollTrigger)
     this.debounceScroll = debounce(this.updateArrows, 300, {})
-    window.addEventListener('resize', this.debounceResize)
+    window.addEventListener("resize", this.debounceResize)
   }
 
   disconnectedCallback() {
     super.disconnectedCallback()
     this.debounceScroll && this.debounceScroll.cancel()
     this.debounceResize && this.debounceResize.cancel()
-    this.slide.removeEventListener('scroll', this.debounceScroll)
+    this.slide.removeEventListener("scroll", this.debounceScroll)
   }
 
   protected firstUpdated() {
-    this.slide = this.shadowRoot?.querySelector('.container') as HTMLElement
+    this.slide = this.shadowRoot?.querySelector(".container") as HTMLElement
 
     requestAnimationFrame(() => {
-      this.slide.addEventListener('scroll', this.debounceScroll)
+      this.slide.addEventListener("scroll", this.debounceScroll)
     })
   }
 
@@ -62,7 +60,7 @@ export class SliderController extends LitElement {
   }
 
   private handleNext() {
-    const nextItem = this.slideItems?.find(item => {
+    const nextItem = this.slideItems?.find((item) => {
       const parentX = this.slide?.getBoundingClientRect().x
       const dif = item.getBoundingClientRect().x - parentX
 
@@ -73,7 +71,7 @@ export class SliderController extends LitElement {
   }
 
   private handlePrev() {
-    const prevItem = findLast(this.slideItems, item => {
+    const prevItem = findLast(this.slideItems, (item: HTMLElement) => {
       const parentX = this.slide?.getBoundingClientRect().x | 0
       const dif = item.getBoundingClientRect().x - parentX
       return dif < -1
@@ -83,25 +81,29 @@ export class SliderController extends LitElement {
   }
 
   private _scrollTo(item: any) {
-    this.currentElement?.removeAttribute('active')
-    this.currentElement = item
-    this.currentElement?.setAttribute('active', 'true')
-    gsap.to(this.slide, { duration: 0.5, ease: Power3.easeInOut, scrollTo: { x: item || 0, y: 0 } })
-  }
+    if (!item) return
 
+    this.currentElement?.removeAttribute("active")
+    this.currentElement = item
+    this.currentElement?.setAttribute("active", "true")
+    item.scrollIntoView({
+      behavior: "smooth",
+      inline: "start",
+      block: "nearest",
+    })
+    this.dispatchEvent(new CustomEvent(SLIDER_SCROLL))
+  }
 
   private updateArrows = () => {
     const scrollLeft = Math.ceil(this.slide.scrollLeft)
     const scrollMax = this.slide.scrollWidth - this.slide.clientWidth
-    this.dispatchEvent(new CustomEvent(SLIDER_SCROLL))
 
-    // setBooleanAttribute(this.arrowLeft.value as HTMLElement, 'disabled', scrollLeft === 0)
-    if (scrollLeft === 0) this.arrowLeft.value?.setAttribute('disabled', 'true')
-    else this.arrowLeft.value?.removeAttribute('disabled')
+    if (scrollLeft === 0) this.arrowLeft.value?.setAttribute("disabled", "true")
+    else this.arrowLeft.value?.removeAttribute("disabled")
 
-    // setBooleanAttribute(this.arrowRight.value as HTMLElement, 'disabled', scrollLeft >= scrollMax)
-    if (scrollLeft >= scrollMax) this.arrowRight.value?.setAttribute('disabled', 'true')
-    else this.arrowRight.value?.removeAttribute('disabled')
+    if (scrollLeft >= scrollMax)
+      this.arrowRight.value?.setAttribute("disabled", "true")
+    else this.arrowRight.value?.removeAttribute("disabled")
   }
 
   render() {
@@ -115,6 +117,6 @@ export class SliderController extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'slider-controller': SliderController
+    "slider-controller": SliderController
   }
 }

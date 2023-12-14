@@ -1,7 +1,7 @@
-import { css } from 'lit'
+import { css } from "lit"
 
 const CSS = css`
-:host {
+  :host {
     display: block;
     position: relative;
 
@@ -9,10 +9,15 @@ const CSS = css`
     --slider-controller-item-size: auto;
     --slider-controller-start-gap: 0;
     --slider-controller-end-gap: 0;
-}
+  }
 
+  :host,
+  ::slotted(slide-item) {
+    box-sizing: border-box;
+  }
 
-.container {
+  .container {
+    box-sizing: border-box;
     scroll-snap-type: x mandatory;
     display: flex;
     gap: var(--slider-controller-gap);
@@ -23,16 +28,15 @@ const CSS = css`
     scrollbar-width: none;
 
     &::-webkit-scrollbar {
-        display: none;
+      display: none;
     }
-}
+  }
 
-::slotted(slide-item) {
+  ::slotted(slide-item) {
     scroll-snap-align: start;
     flex: 1 0 auto;
     flex-basis: var(--slider-controller-item-size);
-}
+  }
+`
 
-`;
-
-export default CSS;
+export default CSS
