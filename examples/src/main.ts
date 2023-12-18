@@ -11,18 +11,13 @@ export class MainElement extends LitElement {
     return [CSS]
   }
 
-  @state() protected disableNext = false
-  @state() protected disablePrev = false
+  @state() private disableNext = false
+  @state() private disablePrev = false
   slider: Ref<SliderController> = createRef()
-
-  connectedCallback(): void {
-    super.connectedCallback()
-  }
 
   handleScrollDone = () => {
     this.disablePrev = !this.slider.value?.hasPrev
     this.disableNext = !this.slider.value?.hasNext
-    console.log(this.slider.value?.currentIndex)
   }
 
   handleNext = () => {
