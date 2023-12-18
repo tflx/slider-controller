@@ -1,6 +1,6 @@
 {
   "name": "slider-controller",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "description": "CSS scroll-snap slider with control options",
   "source": "index.ts",
   "main": "dist/index.js",
