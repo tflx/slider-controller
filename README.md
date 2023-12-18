@@ -34,68 +34,34 @@ Each `SlideItem` represents a single slide in the slider. You can put any conten
 
 The `SliderController` automatically handles the scrolling behavior of the slides. It also emits custom events `SLIDER_SCROLLING` and `SLIDER_SCROLLING_DONE` which you can listen to for custom behavior.
 
-## Event Listeners
 
-You can add event listeners to the `SliderController` to listen for the `SLIDER_SCROLLING` and `SLIDER_SCROLLING_DONE` events.
 
-```javascript
-document
-  .querySelector("slider-controller")
-  .addEventListener("SLIDER_SCROLLING", function () {
-    console.log("Slider is scrolling")
-  })
+## Methods
 
-document
-  .querySelector("slider-controller")
-  .addEventListener("SLIDER_SCROLLING_DONE", function () {
-    console.log("Slider has finished scrolling")
-  })
-```
+| Method     | Type      | Description                  |
+| ---------- | --------- | ---------------------------- |
+| next()    | method  | Slides to next slide-item |
+| previous() | method | Slides to previous slide-item        |
 
-…or with LitElement's `@eventListener` decorator.
-
-```html
-handleScrollDone = () => {
-  …
-}
-
-render() {
-    return html`
-      <slider-controller @SLIDER_SCROLLING_DONE="${this.handleScrollDone}">
-        <slide-item>Slide 1</slide-item>
-        <slide-item>Slide 2</slide-item>
-        <slide-item>Slide 3</slide-item>
-        <!-- Add more slide items as needed -->
-      </slider-controller>
-    `
-  }
-```
 
 ## Getters
 
-Get the current index of the slider:
+| Method     | Type      | Description                  |
+| ---------- | --------- | ---------------------------- |
+| currentIndex    | getter  | Gets the current index of the active slider |
+| totalItems | getter | Gets the total number of slide-items        |
+| hasPrevious | getter | Is there a previous slide-item? Good for disabling buttons fx.        |
+| hasNext | getter | Is there a next slide-item? Good for disabling buttons fx.        |
 
-```javascript
-document.querySelector("slider-controller").currentIndex
-```
 
-Get the total number of slides in the slider:
+## Event Listeners
 
-```javascript
-document.querySelector("slider-controller").totalSlides
-```
+| Event     | Type      | Description                  |
+| ---------- | --------- | ---------------------------- |
+| SLIDER_SCROLLING    | event  | Fires on each DOM scroll event |
+| SLIDER_SCROLLING_DONE    | event  | Fires after scroll is done |
 
-Determine if the slider can scroll to the next slide:
 
-```javascript
-document.querySelector("slider-controller").hasNext
-```
-
-Determine if the slider can scroll to the previous slide:
-
-```javascript
-document.querySelector("slider-controller").hasPrev
-```
 
 ## Cleanup
 

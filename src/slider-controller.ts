@@ -65,7 +65,7 @@ export class SliderController extends LitElement {
     return this.slideItems?.length || 0
   }
 
-  public get hasPrev(): boolean {
+  public get hasPrevious(): boolean {
     if (!this.sliderContainer) return false
 
     const scrollLeft = Math.ceil(this.sliderContainer.scrollLeft)

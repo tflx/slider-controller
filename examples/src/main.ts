@@ -16,7 +16,7 @@ export class MainElement extends LitElement {
   slider: Ref<SliderController> = createRef()
 
   handleScrollDone = () => {
-    this.disablePrev = !this.slider.value?.hasPrev
+    this.disablePrev = !this.slider.value?.hasPrevious
     this.disableNext = !this.slider.value?.hasNext
   }
 
