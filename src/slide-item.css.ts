@@ -2,22 +2,10 @@ import { css } from "lit"
 
 const CSS = css`
   :host {
-    display: inline-flex;
-  }
-
-  :host(:first-child):before {
-    content: "";
-    display: inline;
-    flex: 0 0 auto;
-    flex-basis: var(--slider-controller-start-gap);
-  }
-
-  :host(:last-child):after {
-    content: "";
-    display: inline;
-    flex: 0 1 auto;
-    flex-basis: var(--slider-controller-end-gap);
+    display: block;
+    box-sizing: border-box;
+    scroll-snap-align: start;
+    flex: 0 0 var(--slider-controller-item-size);
   }
 `
-
 export default CSS

@@ -1,16 +1,13 @@
 import { html, LitElement } from "lit"
-import {
-  customElement,
-  property,
-  queryAssignedElements,
-} from "lit/decorators.js"
+import { customElement, queryAssignedElements } from "lit/decorators.js"
 import { createRef, ref } from "lit/directives/ref.js"
-import debounce from "lodash/debounce"
-import findLast from "lodash/findLast"
+import debounce from "./debounce"
 import CSS from "./slider-controller.css"
+import { SlideItem } from "./slide-item"
 import "./slide-item"
 
-export const SLIDER_SCROLL = "SLIDER_SCROLL"
+export const SLIDER_SCROLLING = "SLIDER_SCROLLING"
+export const SLIDER_SCROLLING_DONE = "SLIDER_SCROLLING_DONE"
 
 @customElement("slider-controller")
 export class SliderController extends LitElement {
@@ -18,37 +15,38 @@ export class SliderController extends LitElement {
     return [CSS]
   }
 
-  @property({ type: String }) imageWidth: string | undefined
-  slide!: HTMLElement
-  currentElement: HTMLElement | undefined
-  debounceScroll: any
-  debounceResize: any
-  arrowLeft = createRef<HTMLElement>()
-  arrowRight = createRef<HTMLElement>()
   container = createRef<HTMLElement>()
+  currentElement: SlideItem | undefined
+  index: number = 0
+  debouncedScroll: any
+  debouncedResize: any
 
   @queryAssignedElements({ selector: "slide-item" })
-  slideItems!: Array<HTMLElement>
+  slideItems!: Array<SlideItem>
 
   connectedCallback(): void {
     super.connectedCallback()
-    this.debounceScroll = debounce(this.updateArrows, 300, {})
-    window.addEventListener("resize", this.debounceResize)
+    this.debouncedScroll = debounce(this._update, 300)
+    this.debouncedResize = debounce(this._update, 300)
+    window.addEventListener("resize", this.debouncedResize)
   }
 
   disconnectedCallback() {
     super.disconnectedCallback()
-    this.debounceScroll && this.debounceScroll.cancel()
-    this.debounceResize && this.debounceResize.cancel()
-    this.slide.removeEventListener("scroll", this.debounceScroll)
+    this.debouncedResize.cancel()
+    this.debouncedScroll.cancel()
+    window.removeEventListener("resize", this.debouncedResize)
+    this.sliderContainer?.removeEventListener("scroll", this.debouncedScroll)
   }
 
   protected firstUpdated() {
-    this.slide = this.shadowRoot?.querySelector(".container") as HTMLElement
-
     requestAnimationFrame(() => {
-      this.slide.addEventListener("scroll", this.debounceScroll)
+      this.sliderContainer?.addEventListener("scroll", this.debouncedScroll)
     })
+  }
+
+  private get sliderContainer() {
+    return this.container.value
   }
 
   public next() {
@@ -59,11 +57,36 @@ export class SliderController extends LitElement {
     this.handlePrev()
   }
 
-  private handleNext() {
-    const nextItem = this.slideItems?.find((item) => {
-      const parentX = this.slide?.getBoundingClientRect().x
-      const dif = item.getBoundingClientRect().x - parentX
+  public get currentIndex(): number {
+    return this.index
+  }
 
+  public get totalItems(): number {
+    return this.slideItems?.length || 0
+  }
+
+  public get hasPrev(): boolean {
+    if (!this.sliderContainer) return false
+
+    const scrollLeft = Math.ceil(this.sliderContainer.scrollLeft)
+    return scrollLeft > 0
+  }
+
+  public get hasNext(): boolean {
+    if (!this.sliderContainer) return false
+
+    const scrollLeft = Math.ceil(this.sliderContainer.scrollLeft)
+    const scrollMax =
+      this.sliderContainer.scrollWidth - this.sliderContainer.clientWidth
+    return scrollLeft < scrollMax
+  }
+
+  private handleNext() {
+    if (!this.sliderContainer) return false
+
+    const parentX = this.sliderContainer.getBoundingClientRect().x
+    const nextItem = this.slideItems?.find((item) => {
+      const dif = item.getBoundingClientRect().x - parentX
       return dif > 1
     }) // Rounding up
 
@@ -71,8 +94,10 @@ export class SliderController extends LitElement {
   }
 
   private handlePrev() {
-    const prevItem = findLast(this.slideItems, (item: HTMLElement) => {
-      const parentX = this.slide?.getBoundingClientRect().x | 0
+    if (!this.sliderContainer) return false
+
+    const parentX = this.sliderContainer?.getBoundingClientRect().x | 0
+    const prevItem = this.slideItems?.findLast((item) => {
       const dif = item.getBoundingClientRect().x - parentX
       return dif < -1
     }) // Rounding down
@@ -80,30 +105,32 @@ export class SliderController extends LitElement {
     this._scrollTo(prevItem)
   }
 
-  private _scrollTo(item: any) {
+  private _scrollTo(item: SlideItem | undefined) {
     if (!item) return
 
-    this.currentElement?.removeAttribute("active")
-    this.currentElement = item
-    this.currentElement?.setAttribute("active", "true")
     item.scrollIntoView({
       behavior: "smooth",
       inline: "start",
       block: "nearest",
     })
-    this.dispatchEvent(new CustomEvent(SLIDER_SCROLL))
+    this.dispatchEvent(new CustomEvent(SLIDER_SCROLLING))
   }
 
-  private updateArrows = () => {
-    const scrollLeft = Math.ceil(this.slide.scrollLeft)
-    const scrollMax = this.slide.scrollWidth - this.slide.clientWidth
+  private _update = () => {
+    if (!this.sliderContainer) return false
 
-    if (scrollLeft === 0) this.arrowLeft.value?.setAttribute("disabled", "true")
-    else this.arrowLeft.value?.removeAttribute("disabled")
+    this.currentElement?.removeAttribute("active")
 
-    if (scrollLeft >= scrollMax)
-      this.arrowRight.value?.setAttribute("disabled", "true")
-    else this.arrowRight.value?.removeAttribute("disabled")
+    const parentX = this.sliderContainer.getBoundingClientRect().x
+    this.index = this.slideItems?.findIndex((item) => {
+      const x = item.getBoundingClientRect().x
+      const hit = x - parentX >= 0
+      if (hit) this.currentElement = item
+      return hit
+    })
+    this.currentElement?.setAttribute("active", "true")
+
+    this.dispatchEvent(new CustomEvent(SLIDER_SCROLLING_DONE))
   }
 
   render() {

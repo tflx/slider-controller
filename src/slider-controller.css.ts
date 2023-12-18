@@ -4,16 +4,10 @@ const CSS = css`
   :host {
     display: block;
     position: relative;
+    box-sizing: border-box;
 
     --slider-controller-gap: 0;
     --slider-controller-item-size: auto;
-    --slider-controller-start-gap: 0;
-    --slider-controller-end-gap: 0;
-  }
-
-  :host,
-  ::slotted(slide-item) {
-    box-sizing: border-box;
   }
 
   .container {
@@ -31,12 +25,5 @@ const CSS = css`
       display: none;
     }
   }
-
-  ::slotted(slide-item) {
-    scroll-snap-align: start;
-    flex: 1 0 auto;
-    flex-basis: var(--slider-controller-item-size);
-  }
 `
-
 export default CSS

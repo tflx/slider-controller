@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es2019",
-    "module": "es2015",
+    "target": "es2021",
     "moduleResolution": "node",
     "lib": [
-      "es2019",
+      "es2023",
       "dom"
     ],
     "declaration": true,
@@ -12,6 +11,9 @@
     "experimentalDecorators": true,
     "useDefineForClassFields": false,
     "outDir": "./dist",
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
   },
   "include": [
     "src/**/*.ts",

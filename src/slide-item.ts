@@ -1,6 +1,5 @@
-import { html, LitElement } from "lit"
+import { html, LitElement, PropertyValueMap } from "lit"
 import { customElement } from "lit/decorators.js"
-
 import CSS from "./slide-item.css"
 
 @customElement("slide-item")

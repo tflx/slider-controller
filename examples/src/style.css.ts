@@ -10,15 +10,21 @@ const CSS = css`
 
   img {
     display: block;
+    max-width: 100%;
   }
 
-  .slider-wrapper {
-    padding-left: 10%;
+  slider-controller {
+    --slider-controller-gap: 10px;
+    /* --slider-controller-item-size: 250px; */
   }
 
   slide-item {
     border: 1px solid black;
     text-align: center;
+
+    &[active="true"] {
+      border-color: red;
+    }
   }
 `
 export default CSS

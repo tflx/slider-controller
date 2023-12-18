@@ -4,11 +4,12 @@
   "description": "CSS scroll-snap slider with control options",
   "source": "index.ts",
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/slider-controller.d.ts",
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint \"**/*.{js,ts}\""
   },
   "repository": {
     "type": "git",
@@ -34,10 +35,12 @@
   ],
   "homepage": "https://github.com/tflx/slider-controller#readme",
   "dependencies": {
-    "lit": "^2.2.7",
-    "lodash": "4.17.21"
+    "lit": "^3.1.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.202",
+    "eslint": "^8.56.0",
+    "eslint-plugin-lit": "^1.11.0",
     "typescript": "^5.3.2"
   }
 }
