@@ -9,6 +9,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",
+    "dev": "npm run build:watch & cd examples && npm run dev",
     "lint": "eslint \"**/*.{js,ts}\""
   },
   "repository": {
