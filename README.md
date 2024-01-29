@@ -83,7 +83,7 @@ slider-controller {
 }
 ```
 
-2. `--slider-controller-item-size`: This variable controls the size of the slides. You can set it to any valid CSS length value. For example, to set the size to 200px, you would do:
+2. `--slider-controller-item-size`: This variable controls the size of the slides. You can set it to any valid CSS length value. The default is auto meaning that the items retain their natural size. For example, to set the size to 200px, you would do:
 
 ```css
 slider-controller {

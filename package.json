@@ -1,6 +1,6 @@
 {
   "name": "slider-controller",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "CSS scroll-snap slider with control options",
   "source": "index.ts",
   "main": "dist/index.js",
@@ -9,6 +9,8 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",
+    "release:patch": "npm run build:watch && npm version patch && npm publish",
+    "release:minor": "npm run build:watch && npm version minor && npm publish",
     "lint": "eslint \"**/*.{js,ts}\""
   },
   "repository": {
